@@ -126,11 +126,11 @@ int MultiCurl::socket_function(CURL* native_easy, curl_socket_t s, int what, voi
    SocketTrackerPtr st=ecurl->get_socket_tracker();
    st->read_ready = !!(what & CURL_POLL_IN);
    st->write_ready = !!(what & CURL_POLL_OUT);
-   if (what == CURL_POLL_IN)
-       self->m_event_engine->async_detect_event(st,boost::bind(&MultiCurl::on_read_event, self, boost::asio::placeholders::error, st)); 
+   if (st->read_ready && !st->pending_read)
+       self->m_event_engine->async_detect_read_event(st,boost::bind(&MultiCurl::on_read_event, self, boost::asio::placeholders::error, st)); 
 
-   if (what == CURL_POLL_OUT)
-       self->m_event_engine->async_detect_event(st,boost::bind(&MultiCurl::on_write_event, self, boost::asio::placeholders::error, st));
+   if (st->write_ready && !st->pending_write)
+       self->m_event_engine->async_detect_write_event(st,boost::bind(&MultiCurl::on_write_event, self, boost::asio::placeholders::error, st));
 
    return 0;
 }
@@ -145,8 +145,9 @@ void MultiCurl::on_read_event(const boost::system::error_code& err, SocketTracke
      if (!err){
         //tell curl is ready to read
         socket_action(st->socket->native_handle(), CURL_CSELECT_IN);
+        check_multi_done();
         if (st->read_ready)
-            m_event_engine->async_detect_event(st,boost::bind(&MultiCurl::on_read_event, this, boost::asio::placeholders::error, st));
+            m_event_engine->async_detect_read_event(st,boost::bind(&MultiCurl::on_read_event, this, boost::asio::placeholders::error, st));
      } else if (err != boost::asio::error::operation_aborted){
         socket_action(st->socket->native_handle(), CURL_CSELECT_ERR);
         check_multi_done();
@@ -162,8 +163,9 @@ void MultiCurl::on_write_event(const boost::system::error_code& err, SocketTrack
 
      if (!err) {
         socket_action(st->socket->native_handle(), CURL_CSELECT_OUT);
+        check_multi_done();
         if (st->write_ready)
-             m_event_engine->async_detect_event(st,boost::bind(&MultiCurl::on_write_event, this, boost::asio::placeholders::error, st));
+             m_event_engine->async_detect_write_event(st,boost::bind(&MultiCurl::on_write_event, this, boost::asio::placeholders::error, st));
      } else if (err != boost::asio::error::operation_aborted){
         socket_action(st->socket->native_handle(), CURL_CSELECT_ERR);
         check_multi_done();

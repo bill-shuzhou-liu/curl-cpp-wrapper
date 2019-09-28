@@ -22,14 +22,23 @@ public:
     AsioEventEngine(boost::asio::io_service& io_service);
                
     /**
-     * Request to detect an event, which may call async_read or async_write based on the 
-     * SocketTrackerPtr.
+     * Request to detect an event, which will call async_read  
      * @param st, store all socket related information and will also need to be pass to
      * the aysnc operation handler. 
      * @param handler, the handler will be called when event detected
      * @return true if the event is issued 
      */
-    virtual bool  async_detect_event(SocketTrackerPtr st, AsyncEventHandler handler);
+    virtual bool async_detect_read_event(SocketTrackerPtr st, AsyncEventHandler handler);
+
+    /**
+     * Request to detect an event, which may call async_write  
+     * @param st, store all socket related information and will also need to be pass to
+     * the aysnc operation handler. 
+     * @param handler, the handler will be called when event detected
+     * @return true if the event is issued 
+     */
+    virtual bool async_detect_write_event(SocketTrackerPtr st, AsyncEventHandler handler);
+
 
     /**
      * The timeout event required by CURLMOPT_TIMERFUNCTION. The boost::asio::deadline_timer

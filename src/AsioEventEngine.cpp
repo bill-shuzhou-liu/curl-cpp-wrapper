@@ -7,23 +7,22 @@ AsioEventEngine::AsioEventEngine(boost::asio::io_service& io_service):
 {
 }
 
-bool AsioEventEngine::async_detect_event(SocketTrackerPtr st, AsyncEventHandler handler)
+bool AsioEventEngine::async_detect_read_event(SocketTrackerPtr st, AsyncEventHandler handler)
 {
-     if (st->read_ready && !st->pending_read){
         LOG_TRACE("check read event");
         st->socket->async_read_some(boost::asio::null_buffers(), handler);
         st->pending_read = true; //only one async_read allowd at the same time
         return true;
-     }
+}
 
-     if (st->write_ready && !st->pending_write){
+bool AsioEventEngine::async_detect_write_event(SocketTrackerPtr st, AsyncEventHandler handler)
+{
+
         LOG_TRACE("check write event");
         st->socket->async_write_some(boost::asio::null_buffers(), handler);
         st->pending_write = true; //only one async_write allowd at the same time
         return true;
-     }
 
-     return false;
 }
 
 bool AsioEventEngine::async_detect_timeout(long timeout_ms, TimeoutHandler handler)

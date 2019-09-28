@@ -63,6 +63,10 @@ CURL* CurlTask::get_easy_handler() const
 
 void CurlTask::on_job_complete(CURLcode result)
 {
+     if (m_tracker) {
+         m_tracker->read_ready=false;
+         m_tracker->write_ready=false;
+     }
      m_download_job->handle_download_completed(m_easy_handler, result);
 }
 

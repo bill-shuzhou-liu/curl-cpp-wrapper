@@ -1,4 +1,5 @@
 # MutliCurl wrapper
+This project use the boost asio as the event engine for the mutli curl. You can use it to download multiple files with one thread. 
 
 ## Quick start
 ```
@@ -10,6 +11,28 @@ Then you can use the downloader to download multiple urls and save to file 1,2,3
 
 ```
 ./bin/downloader google.com facebook.com
+```
+
+## Write the code
+```
+#include "MultiCurl.hpp"
+#include "AsioEventEngine.hpp"
+#include "FileDownloadJob.hpp"
+
+//define the event engine and MutliCurl 
+boost::asio::io_service io_service;
+EventEnginePtr event(new AsioEventEngine(io_service));
+MultiCurl multi(event);
+
+//Define the downloadjob by specify url and filename
+DownloadJobPtr  downloadJob1(new FileDownloadJob("google.com", "google.html"));
+DownloadJobPtr  downloadJob2(new FileDownloadJob("facebook.com", "facebook.html"));
+multi.async_download(downloadJob1);
+multi.async_download(downloadJob2);
+
+//kick off the async download
+io_service.run();
+
 ```
 
 ## The design

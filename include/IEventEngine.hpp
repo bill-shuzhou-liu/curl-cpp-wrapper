@@ -11,13 +11,23 @@
 class IEventEngine {
 public:
     /**
-     * Detect read/write event for the curl
+     * Detect read event for the curl
      * @param st, store all socket related information and will also need to be pass to
      * the aysnc operation handler. 
      * @param handler, the handler will be called when event detected
      * @return true if the detection is issued 
      */
-    virtual bool async_detect_event(SocketTrackerPtr st, AsyncEventHandler handler) = 0;
+    virtual bool async_detect_read_event(SocketTrackerPtr st, AsyncEventHandler handler) = 0;
+
+    /**
+     * Detect write event for the curl
+     * @param st, store all socket related information and will also need to be pass to
+     * the aysnc operation handler. 
+     * @param handler, the handler will be called when event detected
+     * @return true if the detection is issued 
+     */
+    virtual bool async_detect_write_event(SocketTrackerPtr st, AsyncEventHandler handler) = 0;
+
 
     /**
      * The timeout event required by CURLMOPT_TIMERFUNCTION. 
