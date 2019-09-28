@@ -3,3 +3,4 @@ CMakeFiles/
 bin/
 Makefile
 cmake_install.cmake
+*.swp
