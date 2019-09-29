@@ -1,5 +1,5 @@
 # MutliCurl wrapper
-This project use the boost asio as the event engine for the mutli curl. You can use it to download multiple files with one thread. 
+This project use the boost asio as the event engine for the mutli curl. You can use it to download multiple files concurrently with single thread. 
 
 ## Quick start
 ```
@@ -25,8 +25,8 @@ EventEnginePtr event(new AsioEventEngine(io_service));
 MultiCurl multi(event);
 
 //Define the downloadjob by specify url and filename
-DownloadJobPtr  downloadJob1(new FileDownloadJob("google.com", "google.html"));
-DownloadJobPtr  downloadJob2(new FileDownloadJob("facebook.com", "facebook.html"));
+DownloadJobPtr  downloadJob1(new FileDownloadJob("http://google.com/index.html", "google.html"));
+DownloadJobPtr  downloadJob2(new FileDownloadJob("http://facebook.com/index.html", "facebook.html"));
 multi.async_download(downloadJob1);
 multi.async_download(downloadJob2);
 
@@ -36,7 +36,8 @@ io_service.run();
 ```
 
 ## The design
-The multi-curl uses the boost asio as the event engine: When it needs to write the request or read the response, it will ask the boost asio whether the socket is ready to read/write. 
+The multi-curl uses the boost asio as the event engine: When it needs to write the request or read the response, the boost asio will tell him whether the socket is ready to read or write. 
+
 ![Class diagram](docs/mcurl_class.jpg?raw=true "Class diagram")
 
 The IEventEngine is an interface class and the AsioEventEngine implemented the event detect mechanism required by the multi-curl using boost asio. 
