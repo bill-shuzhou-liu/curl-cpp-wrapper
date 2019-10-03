@@ -7,10 +7,10 @@ cmake CMakeLists.txt
 make
 ```
 
-Then you can use the downloader to download multiple urls and save to file 1,2,3...:
+Then you can use the downloader to download multiple urls which is in a text file with 'url filename' in each line: 
 
 ```
-./bin/downloader google.com facebook.com
+./bin/downloader urls.txt
 ```
 
 ## Write the code

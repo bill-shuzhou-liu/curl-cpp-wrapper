@@ -1,0 +1,2 @@
+http://google.com/index.html google.html
+http://yahoo.com/index.html yahoo.html
