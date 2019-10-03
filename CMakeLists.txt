@@ -77,14 +77,18 @@ foreach(f ${lib_SRC})
        list(REMOVE_ITEM lib_SRC ${f})
      endif()
 endforeach()
+
+add_library(multicurl SHARED
+          ${lib_SRC}
+)
+
 #list(FILTER lib_SRC EXCLUDE REGEX ".*src/main.cpp$")
 #message( ${lib_SRC} )
 
 add_executable(downloader
-       ${lib_SRC}
        src/main.cpp
 )
-target_link_libraries(downloader boost_thread boost_system pthread curl)
+target_link_libraries(downloader multicurl boost_thread boost_system pthread curl)
 
 #if(USE_BOOST_FUTURE)
 #	target_link_libraries(asiocurl boost_thread)
@@ -99,9 +103,8 @@ file(GLOB test_SRC
 )
 	add_executable(tests
 		${test_SRC}
-                ${lib_SRC}
 	)
-target_link_libraries(tests  boost_thread boost_system pthread curl)
+target_link_libraries(tests  multicurl boost_thread boost_system pthread curl)
 
 	add_custom_target(tests_run ALL
 		COMMAND tests
