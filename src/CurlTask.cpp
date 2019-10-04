@@ -85,11 +85,17 @@ curl_socket_t CurlTask::open_socket(void* clientp, curlsocktype purpose, struct 
           case CURLSOCKTYPE_IPCXN:
                switch (address->socktype){
                      case SOCK_STREAM: { //TODO: only handle TCP so far
-                          SocketTrackerPtr socket=self->m_event_engine->open_socket();
+			  //The function may be call multiple times if there are redirects. 
+                          //We will keep the SocketTracker structure and only change the TCPSocketPtr
+                          TCPSocketPtr socket=self->m_event_engine->open_socket();
                           if (socket == NULL) 
                               return CURL_SOCKET_BAD;
-                          self->m_tracker=socket;
-                          return socket->socket->native_handle();
+			  if (self->m_tracker ==NULL){
+                               self->m_tracker.reset(new SocketTracker(socket));
+                          } else {
+                               self->m_tracker->socket=socket;
+                          }
+                          return socket->native_handle();
                      }
                      default:
                           return CURL_SOCKET_BAD;

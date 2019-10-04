@@ -46,7 +46,7 @@ void AsioEventEngine::cancel_timer()
     m_timer.cancel();
 }
 
-SocketTrackerPtr AsioEventEngine::open_socket()
+TCPSocketPtr AsioEventEngine::open_socket()
 {
    LOG_TRACE("Open Socket");
    TCPSocketPtr tp(new boost::asio::ip::tcp::socket(m_io_service));
@@ -54,11 +54,10 @@ SocketTrackerPtr AsioEventEngine::open_socket()
    tp->open(boost::asio::ip::tcp::v4(), ec);
    if (ec){
        LOG_WARN("fail to open the connection:"<<ec.message());
-       return SocketTrackerPtr();
+       return TCPSocketPtr();
    }
 
-   SocketTrackerPtr st(new SocketTracker(tp));
-   return st;
+   return tp;
 }
 
 void AsioEventEngine::close_socket(SocketTrackerPtr st)

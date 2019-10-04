@@ -62,9 +62,9 @@ public:
 
     /**
      * Create the socket and store it into the SocketTrackerPtr
-     * @return the new SocketTracker is created
+     * @return the new TCPSocket is created
      */
-    virtual SocketTrackerPtr open_socket();
+    virtual TCPSocketPtr open_socket();
 
     /**
      * Close the socket managed by low level event engine
