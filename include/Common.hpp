@@ -19,7 +19,10 @@ typedef boost::function<void () > AsyncRunHandler;
 #define DEBUG_LEVEL     0x03
 #define TRACE_LEVEL     0x04
 
-//#define LOG_LEVEL TRACE_LEVEL
+#ifdef __DEBUG__
+  #define LOG_LEVEL TRACE_LEVEL
+#endif
+
 #ifndef LOG_LEVEL
 #define LOG_LEVEL   DEBUG_LEVEL
 #endif

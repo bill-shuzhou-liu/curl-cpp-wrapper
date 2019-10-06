@@ -4,6 +4,7 @@ CurlTask::CurlTask(DownloadJobPtr& downloadjob,
                 EventEnginePtr events):
       m_download_job(downloadjob) 
       , m_event_engine(events)
+      , m_tracker(new SocketTracker(NULL))
 {
       m_easy_handler=curl_easy_init();
       if (!m_easy_handler){
@@ -90,11 +91,7 @@ curl_socket_t CurlTask::open_socket(void* clientp, curlsocktype purpose, struct 
                           TCPSocketPtr socket=self->m_event_engine->open_socket();
                           if (socket == NULL) 
                               return CURL_SOCKET_BAD;
-			  if (self->m_tracker ==NULL){
-                               self->m_tracker.reset(new SocketTracker(socket));
-                          } else {
-                               self->m_tracker->socket=socket;
-                          }
+                          self->m_tracker->socket=socket;
                           return socket->native_handle();
                      }
                      default:

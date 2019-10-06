@@ -8,7 +8,7 @@
 /*The SocketTracker used to track the events from multi curl*/
 struct SocketTracker
 {
-        SocketTracker(const TCPSocketPtr& s);
+        SocketTracker(TCPSocketPtr s);
 
         //Below two parameters is used to prevent multiple asyc_read and async_write at the same time
         bool pending_read;      //asio is waitting for asyc_read result
@@ -22,7 +22,7 @@ struct SocketTracker
         TCPSocketPtr socket; //the asio socket
 };
 
-inline SocketTracker::SocketTracker(const TCPSocketPtr& s):
+inline SocketTracker::SocketTracker(TCPSocketPtr s):
        pending_read(false),
        pending_write(false),
        read_ready(false),
